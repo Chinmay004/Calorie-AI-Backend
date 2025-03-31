@@ -16,7 +16,7 @@ admin.initializeApp({
 
 // Initialize Google Cloud Authentication
 const auth = new GoogleAuth({
-  keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS, // Ensure this is set correctly
+  credentials: JSON.parse(process.env.GCP_SERVICE_ACCOUNT_KEY), // Load credentials from environment
   scopes: ["https://www.googleapis.com/auth/cloud-platform"],
 });
 
