@@ -7,7 +7,25 @@ const admin = require("firebase-admin");
 const path = require('path'); 
 const app = express();
 const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_CREDENTIALS);
+const { GoogleAuth } = require('google-auth-library');
 
+
+const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS);
+credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
+
+// Authenticate using GoogleAuth
+const auth = new GoogleAuth({
+  credentials,
+  scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+});
+
+// Example: Get an auth client
+async function getAuthClient() {
+  const client = await auth.getClient();
+  console.log("Authenticated successfully!", client);
+}
+
+getAuthClient();
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
