@@ -1,7 +1,10 @@
 const {VertexAI} = require('@google-cloud/vertexai');
 
-// Initialize Vertex with your Cloud project and location
-const vertex_ai = new VertexAI({project: 'optimal-waters-449905-a2', location: 'us-central1'});
+const project = process.env.GCP_PROJECT_ID;
+const location = process.env.GCP_LOCATION;
+
+const vertex_ai = new VertexAI({project: project, location: location});
+
 const model = 'gemini-1.5-flash-002';
 
 const textsi_1 =`You are a recipe assistant app. Your primary function is to generate recipes based on user-provided ingredients and dietary preferences. You MUST respond with ONLY JSON objects. Do not include any introductory or explanatory text outside of the JSON. The JSON object will be parsed directly by the application, so it must be valid and parsable. Use double quotes for all keys and string values. If you cannot determine a value, use an empty string "" or an empty array [].`
