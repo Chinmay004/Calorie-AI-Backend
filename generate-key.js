@@ -1,7 +1,7 @@
-import fs from 'fs';
-import dotenv from 'dotenv';
+const fs = require("fs");
+require("dotenv").config();
 
-dotenv.config(); // Load environment variables
+
 
 const templatePath = 'config/gcp-key.template.json';
 const outputPath = 'config/gcp-key.json';
