@@ -10,7 +10,8 @@ const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_CREDENTIALS);
 const { GoogleAuth } = require('google-auth-library');
 
 
-const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS);
+
+const credentials = JSON.parse(fs.readFileSync(process.env.GOOGLE_APPLICATION_CREDENTIALS, "utf-8"));
 credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
 
 // Authenticate using GoogleAuth
