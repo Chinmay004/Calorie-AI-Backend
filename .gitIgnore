@@ -33,3 +33,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.vercel
+.config/gcp-key.json

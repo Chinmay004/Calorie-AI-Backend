@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "prestart": "node generate-key.js",
     "start":"NODE_OPTIONS=--openssl-legacy-provider node server.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
