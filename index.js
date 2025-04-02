@@ -11,9 +11,8 @@ const { GoogleAuth } = require('google-auth-library');
 
 
 
-const credentials = JSON.parse(fs.readFileSync(process.env.GOOGLE_APPLICATION_CREDENTIALS, "utf-8"));
-credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
-
+const credentials = JSON.parse(Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS, "base64").toString());
+credentials.private_key = credentials.private_key.replace(/\\n/g, "\n");
 // Authenticate using GoogleAuth
 const auth = new GoogleAuth({
   credentials,
