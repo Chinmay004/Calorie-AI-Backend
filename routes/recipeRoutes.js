@@ -9,6 +9,8 @@ const admin = require("firebase-admin"); // Firebase Admin SDK
 const path = require('path');
 const mongoose = require("mongoose")
 const rateLimit = require("express-rate-limit");
+const { GoogleAuth } = require('google-auth-library');
+const { PredictionServiceClient } = require('@google-cloud/aiplatform');
 
 const generateRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -122,6 +124,7 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
+
 
 async function authenticateUser(req) {
   const idToken = req.headers.authorization;
@@ -271,6 +274,8 @@ async function generateAndSaveRecipe(req, user) {
 router.post("/generate",generateRateLimiter, async (req, res) => {
   try {
       const user = await authenticateUser(req); // Call authentication function
+   
+
       const result = await generateAndSaveRecipe(req, user);
 
       if (!result || !result.savedRecipe) {

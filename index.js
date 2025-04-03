@@ -4,11 +4,9 @@ const cors = require("cors");
 require("dotenv").config();
 const connectDB = require("./db");
 const admin = require("firebase-admin");
-const authRoutes = require('./routes/authRoutes'); 
 const path = require('path'); 
 const app = express();
 const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_CREDENTIALS);
-const { GoogleAuth } = require('google-auth-library');
 
 
 admin.initializeApp({

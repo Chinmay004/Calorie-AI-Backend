@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-   
-    "start":"node --openssl-legacy-provider index.js",
+    "start": "node --openssl-legacy-provider index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint src --fix"
@@ -24,6 +23,7 @@
     "express": "^4.21.2",
     "express-rate-limit": "^7.5.0",
     "firebase-admin": "^13.2.0",
+    "fs": "^0.0.1-security",
     "google-auth-library": "^9.15.1",
     "mongoose": "^8.10.0",
     "zod": "^3.24.2"
@@ -36,6 +36,6 @@
     "nodemon": "^3.1.9"
   },
   "engines": {
-  "node": ">=18.0.0"
-}
+    "node": ">=18.0.0"
+  }
 }

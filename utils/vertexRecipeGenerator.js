@@ -1,6 +1,8 @@
 const {VertexAI} = require('@google-cloud/vertexai');
-
+const fs = require('fs');
 const project = process.env.GCP_PROJECT_ID;
+const path = require('path');
+
 const location = process.env.GCP_LOCATION;
 
 const vertex_ai = new VertexAI({project: project, location: location});
