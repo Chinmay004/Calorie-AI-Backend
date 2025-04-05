@@ -223,7 +223,7 @@ function parseRecipeText(recipeText) {
 async function generateAndSaveRecipe(req, user) {
   const { ingredients: requestIngredients, dietaryPreferences } = req.body;
   const aiRecipe = await generateContent(requestIngredients, dietaryPreferences);
-  // console.log("aiRecipe:", aiRecipe); // Check the returned value
+  console.log("aiRecipe:", aiRecipe); // Check the returned value
 
   if (!aiRecipe) {
     console.error("failed to generate Recipe"+error)
@@ -243,28 +243,28 @@ async function generateAndSaveRecipe(req, user) {
 
         const { title, description, tags, steps,nutrition, image, creator, likes, createdAt } = parseRecipeText(cleanedAiRecipe);
 
-    const imagePaths = await generateImage(title);
+    const imageUrls = await generateImage(title);
 
-    if (!imagePaths || imagePaths.length === 0) {
+    if (!imageUrls || imageUrls.length === 0) {
       console.error("No image paths found after recipe generation.");
       return null;
     }
 
-    const filenames = imagePaths.map(imagePath => path.basename(imagePath));
-    // console.log("FILENAMES CHECK IN RECIPEROUTES:"+filenames);
+    const filenames = imageUrls.map(imageUrls => path.basename(imageUrls));
+    console.log("FILENAMES CHECK IN RECIPEROUTES:"+filenames);
     const newRecipe = new Recipe({
       title, description, tags, ingredients, steps, image: filenames, creator: user._id, nutrition
     });
 
 
     const savedRecipe = await newRecipe.save();
-    // console.log("Recipe saved:", savedRecipe);
+    console.log("Recipe saved:", savedRecipe);
 
     user.savedRecipes.push(savedRecipe._id);
     await user.save();
-    // console.log(" IMAGEPATHS CHECK IN RECIPEROUTES:"+imagePaths);
+    console.log(" IMAGEPATHS CHECK IN RECIPEROUTES:"+imageUrls);
 
-    return { savedRecipe, imagePaths };
+    return { savedRecipe, imageUrls };
   } catch (error) {
     console.error("Error parsing or saving recipe:", error);
     return null;
@@ -282,20 +282,20 @@ router.post("/generate",generateRateLimiter, async (req, res) => {
           return res.status(500).json({ message: result && result.message ? result.message : "Recipe generation or saving failed." });
       }
 
-      const { savedRecipe, imagePaths } = result;
+      const { savedRecipe, imageUrls } = result;
 
-      if (!imagePaths || imagePaths.length === 0) {
+      if (!imageUrls || imageUrls.length === 0) {
         console.error("No image paths found after recipe generation.");
         return res.status(500).json({ message: "Image generation failed." });
     }
 
-    const filenames = imagePaths.map(imagePath => {
-      if (typeof imagePath === 'string') { // Check if it's a string path.
-          return path.basename(imagePath); // Extract filename if it's a string path.
-      } else if (Array.isArray(imagePath)) { // Check if it's an array of paths.
-          return imagePath.map(p => path.basename(p)); // Extract filenames from the array.
+    const filenames = imageUrls.map(imageUrls => {
+      if (typeof imageUrls === 'string') { // Check if it's a string path.
+          return path.basename(imageUrls); // Extract filename if it's a string path.
+      } else if (Array.isArray(imageUrls)) { // Check if it's an array of paths.
+          return imageUrls.map(p => path.basename(p)); // Extract filenames from the array.
       } else {
-          console.warn("Invalid image path:", imagePath);
+          console.warn("Invalid image path:", imageUrls);
           return null;
       }
   }).filter(filename => filename !== null); // Filter out any nulls.

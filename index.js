@@ -11,7 +11,10 @@ const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_CREDENTIALS);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
+  storageBucket: "recipe-app-auth-29f9d.firebasestorage.app",
 });
+const bucket = admin.storage().bucket();
+console.log("🔥 Firebase Storage Bucket Initialized:", admin.storage().bucket().name);
 
   
 // Middleware
@@ -31,7 +34,7 @@ app.use('/api/auth', require("./routes/authRoutes")); // Mount the auth routes
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
-
+module.exports = {admin, bucket };
 
 
 
