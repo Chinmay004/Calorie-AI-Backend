@@ -35,3 +35,4 @@ dist-ssr
 *.sw?
 .vercel
 .config/gcp-key.json
+.config/firebase-adminsdk.json

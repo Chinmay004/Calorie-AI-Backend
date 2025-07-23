@@ -61,7 +61,7 @@ async function generateImage(recipeTitle) {
             const publicUrl = `https://storage.googleapis.com/${bucket.name}/recipes/${filename}`;
 
             imageUrls.push(publicUrl);
-            await file.makePublic();
+            // await file.makePublic();
             i++;
             // const [url] = await file.getSignedUrl({
             //     action: 'read',
