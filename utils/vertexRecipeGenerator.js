@@ -1,15 +1,37 @@
-const {VertexAI} = require('@google-cloud/vertexai');
+const { VertexAI } = require('@google-cloud/vertexai');
 const fs = require('fs');
 const project = process.env.GCP_PROJECT_ID;
 const path = require('path');
 
 const location = process.env.GCP_LOCATION;
 
-const vertex_ai = new VertexAI({project: project, location: location});
+// const vertex_ai = new VertexAI({project: project, location: location});
+
+// Debug environment values
+console.log("Initializing Vertex AI with the following config:");
+console.log("GCP_PROJECT_ID:", process.env.GCP_PROJECT_ID);
+console.log("GCP_LOCATION:", process.env.GCP_LOCATION);
+
+// Construct path to key file
+const keyPath = path.join(__dirname, '../config/vertex-key.json');
+console.log("Using key file at:", keyPath);
+
+// Initialize Vertex AI
+const vertex_ai = new VertexAI({
+  project: process.env.GCP_PROJECT_ID,
+  location: process.env.GCP_LOCATION,
+  googleAuthOptions: {
+    keyFile: keyPath,
+    scopes: 'https://www.googleapis.com/auth/cloud-platform',
+  }
+});
+
+console.log("Vertex AI initialized successfully.");
+
 
 const model = 'gemini-1.5-flash-002';
 
-const textsi_1 =`You are a recipe assistant app. Your primary function is to generate recipes based on user-provided ingredients and dietary preferences. You MUST respond with ONLY JSON objects. Do not include any introductory or explanatory text outside of the JSON. The JSON object will be parsed directly by the application, so it must be valid and parsable. Use double quotes for all keys and string values. If you cannot determine a value, use an empty string "" or an empty array [].`
+const textsi_1 = `You are a recipe assistant app. Your primary function is to generate recipes based on user-provided ingredients and dietary preferences. You MUST respond with ONLY JSON objects. Do not include any introductory or explanatory text outside of the JSON. The JSON object will be parsed directly by the application, so it must be valid and parsable. Use double quotes for all keys and string values. If you cannot determine a value, use an empty string "" or an empty array [].`
 
 // Instantiate the models
 const generativeModel = vertex_ai.preview.getGenerativeModel({
@@ -39,18 +61,18 @@ const generativeModel = vertex_ai.preview.getGenerativeModel({
     }
   ],
   systemInstruction: {
-    parts:[{ text: textsi_1 }]
+    parts: [{ text: textsi_1 }]
   },
 });
 
 
 
 
-  async function generateContent(ingredients,dietaryPreferences) {
-    
+async function generateContent(ingredients, dietaryPreferences) {
 
-    const text1 = {
-      text: `Generate a detailed recipe based on:
+
+  const text1 = {
+    text: `Generate a detailed recipe based on:
         - Ingredients: ${ingredients}
         - Dietary Preferences: ${dietaryPreferences}
         
@@ -88,34 +110,34 @@ const generativeModel = vertex_ai.preview.getGenerativeModel({
             "vitamins": "Vitamin C : 20mg" // Example: Only one vitamin
           }
         }`
-    };
-      
+  };
 
 
-    const req = {
+
+  const req = {
     contents: [
-      {role: 'user', parts: [text1]}
+      { role: 'user', parts: [text1] }
     ],
   };
 
 
 
-const streamingResp = await generativeModel.generateContentStream(req);
+  const streamingResp = await generativeModel.generateContentStream(req);
 
-let fullResponseText = ''; // Accumulate the AI-generated JSON string
+  let fullResponseText = ''; // Accumulate the AI-generated JSON string
 
-    for await (const item of streamingResp.stream) {
-        if (item.candidates && item.candidates[0] && item.candidates[0].content && item.candidates[0].content.parts) {
-            item.candidates[0].content.parts.forEach(part => {
-                fullResponseText += part.text;
-            });
-        }
+  for await (const item of streamingResp.stream) {
+    if (item.candidates && item.candidates[0] && item.candidates[0].content && item.candidates[0].content.parts) {
+      item.candidates[0].content.parts.forEach(part => {
+        fullResponseText += part.text;
+      });
     }
+  }
 
-    return fullResponseText; // Return the raw AI-generated JSON string
+  return fullResponseText; // Return the raw AI-generated JSON string
 }
 
 
 
 
-module.exports = {generateContent};
+module.exports = { generateContent };
